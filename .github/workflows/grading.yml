@@ -1,0 +1,18 @@
+name: Grading
+
+on: [push]
+
+env:
+  PASSWORD: ${{ secrets.PASSWORD }}
+
+jobs:
+  grading-hello-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: source ./homework/scripts/file_protection.sh && decrypt_files ./homework/src/hello_server/cache.rs ./homework/src/hello_server/tcp.rs ./homework/src/hello_server/thread_pool.rs
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          target: x86_64-unknown-linux-gnu
+          components: rustfmt, clippy, rust-src
+      - run: cd homework/ && ./scripts/grade-hello_server.sh
