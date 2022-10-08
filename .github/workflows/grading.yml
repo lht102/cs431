@@ -16,3 +16,13 @@ jobs:
           target: x86_64-unknown-linux-gnu
           components: rustfmt, clippy, rust-src
       - run: cd homework/ && ./scripts/grade-hello_server.sh
+  grading-linked-list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: source ./homework/scripts/file_protection.sh && decrypt_files ./homework/src/linked_list.rs
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          target: x86_64-unknown-linux-gnu
+          components: rustfmt, clippy, rust-src
+      - run: cd homework/ && ./scripts/grade-linked_list.sh
