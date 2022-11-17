@@ -15,8 +15,6 @@ export RUST_TEST_THREADS=1
 performance_failed=false
 
 echo "1. Checking uses of SeqCst..."
-# TODO(@tomtomjhj): This mapfile thing requires bash≥4.0. Not compatible with Mac's bash.
-# Alternatives: https://stackoverflow.com/a/32931403
 mapfile -t lines < <(grep_skip_comment SeqCst $BASEDIR/../src/hazard_pointer/{retire,hazard}.rs )
 if [ ${#lines[@]} -gt 2 ]; then
     echo "You used SeqCst more than 2 times!"
@@ -69,7 +67,8 @@ for RUNNER in "${RUNNERS[@]}"; do
             "--test hazard_pointer -- --exact counter"
             "--test hazard_pointer -- --exact counter_sleep"
             "--test hazard_pointer -- --exact stack"
-            "--test hazard_pointer -- --exact two_stacks"
+            "--test hazard_pointer -- --exact queue"
+            "--test hazard_pointer -- --exact stack_queue"
         )
         if [ $(run_tests) -ne 0 ]; then
             integration_failed=true

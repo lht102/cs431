@@ -179,23 +179,24 @@ fn test_ord() {
 }
 
 #[test]
+// Allow for more easier fine-tuned debugging.
+#[allow(clippy::neg_cmp_op_on_partial_ord)]
 fn test_ord_nan() {
-    let nan = 0.0f64 / 0.0;
-    let n = list_from(&[nan]);
-    let m = list_from(&[nan]);
+    let n = list_from(&[f64::NAN]);
+    let m = list_from(&[f64::NAN]);
     assert!(!(n < m));
     assert!(!(n > m));
     assert!(!(n <= m));
     assert!(!(n >= m));
 
-    let n = list_from(&[nan]);
+    let n = list_from(&[f64::NAN]);
     let one = list_from(&[1.0f64]);
     assert!(!(n < one));
     assert!(!(n > one));
     assert!(!(n <= one));
     assert!(!(n >= one));
 
-    let u = list_from(&[1.0f64, 2.0, nan]);
+    let u = list_from(&[1.0f64, 2.0, f64::NAN]);
     let v = list_from(&[1.0f64, 2.0, 3.0]);
     assert!(!(u < v));
     assert!(!(u > v));
@@ -213,14 +214,14 @@ fn test_ord_nan() {
 #[test]
 fn test_show() {
     let list: LinkedList<_> = (0..10).collect();
-    assert_eq!(format!("{:?}", list), "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]");
+    assert_eq!(format!("{list:?}"), "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]");
 
     let list: LinkedList<_> = vec!["just", "one", "test", "more"]
         .iter()
         .cloned()
         .collect();
     assert_eq!(
-        format!("{:?}", list),
+        format!("{list:?}"),
         "[\"just\", \"one\", \"test\", \"more\"]"
     );
 }
@@ -327,7 +328,9 @@ fn test_peek_next() {
 
     assert_eq!(it.peek_next(), Some(&mut 1));
 
-    it.peek_next().map(|value| *value = 42);
+    if let Some(value) = it.peek_next() {
+        *value = 42;
+    }
 
     assert_eq!(it.next(), Some(&mut 42));
 
